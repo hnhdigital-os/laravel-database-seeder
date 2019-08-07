@@ -12,19 +12,7 @@ This package has been developed by H&H|Digital, an Australian botique developer.
 
 Via composer:
 
-`$ composer require-dev hnhdigital-os/laravel-database-seeder ~1.0`
-
-This package autoloads from Laravel 5.5.
-
-For Laravel 5.4 and below, enable the service provider by editing config/app.php:
-
-```php
-    'providers' => [
-        ...
-        HnhDigital\LaravelSeedFomFile\ServiceProvider::class,
-        ...
-    ];
-```
+`composer require hnhdigital-os/laravel-database-seeder ~1.0`
 
 ## Usage
 
