@@ -20,5 +20,4 @@ class ServiceProvider extends BaseServiceProvider
             ]);
         }
     }
-
 }
