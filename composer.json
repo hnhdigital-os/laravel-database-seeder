@@ -1,39 +1,48 @@
 {
-    "name": "hnhdigital-os/laravel-database-seeder",
-    "description": "Provides the ability to import a file or files from a folder into your database.",
-    "keywords": ["laravel", "php", "db", "seed"],
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Rocco Howard",
-            "email": "rocco@hnh.digital"
-        }
-    ],
-    "require": {
-        "php" : ">=7.0.10",
-        "league/csv": "^9.0"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "5.7",
-        "illuminate/database": "4.*|5.*",
-        "symfony/process": "~2.3",
-        "codeclimate/php-test-reporter": "dev-master"
-    },
-    "autoload": {
-        "psr-4": {
-            "HnhDigital\\LaravelDatabaseSeeder\\": "src/"
-        }
-    },
-    "scripts": {
-      "test": "composer phpunit && composer phpcs",
-      "phpcs": "./vendor/bin/phpcs -p -s --standard=PSR2 ./src ./tests",
-      "phpunit": "phpunit"
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "HnhDigital\\LaravelDatabaseSeeder\\ServiceProvider"
-            ]
-        }
+  "name": "hnhdigital-os/laravel-database-seeder",
+  "description": "Provides the ability to import a file or files from a folder into your database.",
+  "keywords": ["laravel", "php", "db", "seed"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Rocco Howard",
+      "email": "rocco@hnh.digital"
     }
+  ],
+  "require": {
+      "php" : ">=7.0.10",
+      "league/csv": "^9.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "5.7",
+    "illuminate/database": "4.*|5.*",
+    "symfony/process": "~2.3",
+    "codeclimate/php-test-reporter": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "HnhDigital\\LaravelDatabaseSeeder\\": "src/"
+    }
+  },
+  "scripts": {
+    "test": [
+      "composer phpunit && composer phpcs && composer phpmd"
+    ],
+    "phpunit": [
+      "phpunit"
+    ],
+    "phpcs": [
+      "phpcs -p -s --standard=PSR2 ./src ./tests"
+    ],
+    "phpmd": [
+      "phpmd ./src text phpmd.xml"
+    ]
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "HnhDigital\\LaravelDatabaseSeeder\\ServiceProvider"
+      ]
+    }
+  }
 }

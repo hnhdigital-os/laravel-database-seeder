@@ -37,7 +37,7 @@ trait SharedTrait
         // Reorder files correctly.
         foreach ($files as $path) {
             $table_name = File::name($path);
-            $table_name_array = explode('_', $tableName, 2);
+            $table_name_array = explode('_', $table_name, 2);
 
             if (is_numeric($table_name_array[0])) {
                 $table_order = $table_name_array[0];

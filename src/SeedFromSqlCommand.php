@@ -35,7 +35,7 @@ class SeedFromSqlCommand extends Command
     public function handle()
     {
         $source_path = $this->argument('path');
-        $connection = !empty($this->option('connection'))
+        $this->connection = !empty($this->option('connection'))
             ? $this->option('connection')
             : Config::get('database.default');
 
@@ -62,8 +62,7 @@ class SeedFromSqlCommand extends Command
             return;
         }
 
-
-        foreach ($files_order as $path) {
+        foreach ($files as $path) {
             $this->process($path);
         }
 
@@ -86,7 +85,7 @@ class SeedFromSqlCommand extends Command
         }
 
         try {
-            DB::connection($connection)->unprepared(File::get($path));
+            DB::connection($this->connection)->unprepared(File::get($path));
 
             $this->line('');
             $this->line('');

@@ -37,7 +37,9 @@ class SeedFromCsvCommand extends Command
     {
         // Get arguments and options.
         $source_path = $this->argument('path');
-        $connection = !empty($this->option('connection'))
+
+        // Database connection to use.
+        $this->connection = !empty($this->option('connection'))
             ? $this->option('connection')
             : config('database.default');
 
@@ -88,37 +90,20 @@ class SeedFromCsvCommand extends Command
         }
 
         try {
-
             $this->line('');
             $this->line('');
             $this->info('Processing '.$table_name);
             $this->line('');
 
+            $this->prepareTable($this->connection, $table_name);
+
+
             $csv = Reader::createFromPath($path);
             $csv->setHeaderOffset(0);
 
-            DB::connection($connection)
-                ->statement('SET FOREIGN_KEY_CHECKS=0;');
-
-            DB::connection($connection)
-                ->table($table_name)
-                ->truncate();
-
-            DB::connection($connection)
-                ->statement('SET FOREIGN_KEY_CHECKS=1;');
-
-            foreach ($csv as $record)  {
-                foreach ($record as $key => &$value) {
-                    if ($value === 'NULL') {
-                        $value = null;
-                    }
-                }
-
-                DB::connection($connection)
-                    ->table($table_name)
-                    ->insert($record);
+            foreach ($csv as $record) {
+                $this->processRow($this->connection, $table_name, $record);
             }
-
         } catch (\Exception $exception) {
             $this->line('');
             $this->error('SQL error occurred on importing '.$table_name);
@@ -127,5 +112,44 @@ class SeedFromCsvCommand extends Command
         }
 
         $this->progress_bar->advance();
+    }
+
+    /**
+     * Prepare table.
+     *
+     * @param string $connection
+     * @param string $table_name
+     *
+     * @return void
+     */
+    private function prepareTable($connection, $table_name)
+    {
+        DB::connection($connection)
+            ->statement('SET FOREIGN_KEY_CHECKS=0;');
+
+        DB::connection($connection)
+            ->table($table_name)
+            ->truncate();
+
+        DB::connection($connection)
+            ->statement('SET FOREIGN_KEY_CHECKS=1;');
+    }
+
+    /**
+     * Process row in CSV file.
+     *
+     * @return void
+     */
+    private function processRow($connection, $table_name, $record)
+    {
+        foreach ($record as &$value) {
+            if ($value === 'NULL') {
+                $value = null;
+            }
+        }
+
+        DB::connection($connection)
+            ->table($table_name)
+            ->insert($record);
     }
 }
