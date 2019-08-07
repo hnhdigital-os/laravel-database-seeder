@@ -43,7 +43,6 @@ class SeedFromCsvCommand extends Command
             ? $this->option('connection')
             : config('database.default');
 
-
         // Get the files.
         $files = $this->getFiles($source_path);
 
@@ -96,7 +95,6 @@ class SeedFromCsvCommand extends Command
             $this->line('');
 
             $this->prepareTable($this->connection, $table_name);
-
 
             $csv = Reader::createFromPath($path);
             $csv->setHeaderOffset(0);
