@@ -7,7 +7,7 @@ use DB;
 use File;
 use Illuminate\Console\Command;
 
-class SeedFromRawCommand extends Command
+class SeedFromSqlCommand extends Command
 {
     /**
      * The name and signature of the console command.
