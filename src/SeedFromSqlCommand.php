@@ -46,7 +46,7 @@ class SeedFromRawCommand extends Command
         }
 
         if ($type === 'dir') {
-            if (substr($source_path, strlen($source_path) - 1)) === '/') {
+            if (substr($source_path, strlen($source_path) - 1) === '/') {
                 $source_path = substr($source_path, 0, -1);
             }
 
