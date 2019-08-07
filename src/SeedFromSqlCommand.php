@@ -9,6 +9,8 @@ use Illuminate\Console\Command;
 
 class SeedFromSqlCommand extends Command
 {
+    use SharedTrait;
+
     /**
      * The name and signature of the console command.
      *
@@ -37,78 +39,66 @@ class SeedFromSqlCommand extends Command
             ? $this->option('connection')
             : Config::get('database.default');
 
-        try {
-            $type = File::type($source_path);
-        } catch (\Exception $exception) {
-            $this->error("{$source_path} does not exist.");
 
-            return 1;
+        // Get the files.
+        $files = $this->getFiles($source_path);
+
+        if (count($files) === 0) {
+            $this->error('No files found.');
+
+            return;
         }
 
-        if ($type === 'dir') {
-            if (substr($source_path, strlen($source_path) - 1) === '/') {
-                $source_path = substr($source_path, 0, -1);
-            }
+        // Setup progress bar.
+        $this->progress_bar = $this->output->createProgressBar(count($files));
 
-            $files = File::files($source_path);
-        } else {
-            $files = [$source_path];
-        }
-
-        $no_order = count($files);
-        $progress_bar = $this->output->createProgressBar($no_order);
-        $files_order = [];
-
-        foreach ($files as $path) {
-            $table_name = File::name($path);
-            $table_name_array = explode('_', $table_name, 2);
-
-            if (is_numeric($table_name_array[0])) {
-                $table_order = $table_name_array[0];
-                $files_order[$table_order] = $path;
-            } else {
-                $files_order[$no_order] = $path;
-                $no_order++;
-            }
-        }
-
-        ksort($files_order);
-
-        $this->info(' This process will replace any existing data.');
+        $this->info('This process will replace any existing data.');
 
         if (!$this->option('force')) {
             $force_import = $this->confirm('Are you sure? [y|N]');
         }
 
+        if (!$force_import) {
+            return;
+        }
+
+
         foreach ($files_order as $path) {
-            $table_name = File::name($path);
-            $table_name_array = explode('_', $table_name, 2);
-
-            if (is_numeric($table_name_array[0])) {
-                $table_name = $table_name_array[1];
-            }
-
-            if ($force_import) {
-                try {
-                    DB::connection($connection)->unprepared(File::get($path));
-
-                    $this->line('');
-                    $this->line('');
-                    $this->info("Processing {$table_name}");
-                    $this->line('');
-                } catch (\Exception $exception) {
-                    $this->line('');
-                    $this->error("SQL error occurred on importing {$table_name}");
-                    $this->line($exception->getMessage());
-                    $this->line('');
-                }
-
-                $progress_bar->advance();
-            }
+            $this->process($path);
         }
 
         $this->line('');
-        $this->line('');
         $this->info('Done.');
+    }
+
+    /**
+     * Process a given file.
+     *
+     * @return void
+     */
+    private function process($path)
+    {
+        $table_name = File::name($path);
+        $table_name_array = explode('_', $table_name, 2);
+
+        if (is_numeric($table_name_array[0])) {
+            $table_name = $table_name_array[1];
+        }
+
+        try {
+            DB::connection($connection)->unprepared(File::get($path));
+
+            $this->line('');
+            $this->line('');
+            $this->info("Processing {$table_name}");
+            $this->line('');
+        } catch (\Exception $exception) {
+            $this->line('');
+            $this->error("SQL error occurred on importing {$table_name}");
+            $this->line($exception->getMessage());
+            $this->line('');
+        }
+
+        $this->progress_bar->advance();
     }
 }
