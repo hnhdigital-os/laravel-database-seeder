@@ -89,6 +89,8 @@ class SeedFromCsvCommand extends Command
 
         $connection = $this->connection;
 
+        $table_name_array = explode('.', $table_name, 2);
+
         // Connection is present in the file name.
         if (count($table_name_array) === 2) {
             $connection = $table_name_array[0];
