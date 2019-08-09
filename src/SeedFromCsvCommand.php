@@ -18,7 +18,6 @@ class SeedFromCsvCommand extends Command
      */
     protected $signature = 'db:seed-from-csv {path}
                             {--force : Force import without confirmaion}
-                            {--connection-from-dirname}
                             {--connection=}';
 
     /**
@@ -38,7 +37,7 @@ class SeedFromCsvCommand extends Command
         // Get arguments and options.
         $source_path = $this->argument('path');
 
-        // Database connection to use.
+        // Force default database connection.
         $this->connection = !empty($this->option('connection'))
             ? $this->option('connection')
             : config('database.default');
@@ -88,18 +87,26 @@ class SeedFromCsvCommand extends Command
             $table_name = $table_name_array[1];
         }
 
+        $connection = $this->connection;
+
+        // Connection is present in the file name.
+        if (count($table_name_array) === 2) {
+            $connection = $table_name_array[0];
+            $table_name = $table_name_array[1];
+        }
+
         try {
             $this->line('');
             $this->line("Processing <info>{$table_name}</info>");
             $this->line('');
 
-            $this->prepareTable($this->connection, $table_name);
+            $this->prepareTable($connection, $table_name);
 
             $csv = Reader::createFromPath($path);
             $csv->setHeaderOffset(0);
 
             foreach ($csv as $record) {
-                $this->processRow($this->connection, $table_name, $record);
+                $this->processRow($connection, $table_name, $record);
             }
         } catch (\Exception $exception) {
             $this->line('');
