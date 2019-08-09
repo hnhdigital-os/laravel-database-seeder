@@ -90,8 +90,7 @@ class SeedFromCsvCommand extends Command
 
         try {
             $this->line('');
-            $this->line('');
-            $this->info('Processing '.$table_name);
+            $this->line("Processing <info>{$table_name}</info>");
             $this->line('');
 
             $this->prepareTable($this->connection, $table_name);
