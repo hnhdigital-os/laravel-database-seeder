@@ -102,6 +102,9 @@ class SeedFromCsvCommand extends Command
             $this->line("Processing <info>{$table_name}</info>");
             $this->line('');
 
+            DB::connection($connection)
+                ->statement('SET FOREIGN_KEY_CHECKS=0;');
+
             $this->prepareTable($connection, $table_name);
 
             $csv = Reader::createFromPath($path);
@@ -110,6 +113,10 @@ class SeedFromCsvCommand extends Command
             foreach ($csv as $record) {
                 $this->processRow($connection, $table_name, $record);
             }
+
+            DB::connection($connection)
+                ->statement('SET FOREIGN_KEY_CHECKS=1;');
+
         } catch (\Exception $exception) {
             $this->line('');
             $this->error('SQL error occurred on importing '.$table_name);
@@ -130,15 +137,10 @@ class SeedFromCsvCommand extends Command
      */
     private function prepareTable($connection, $table_name)
     {
-        DB::connection($connection)
-            ->statement('SET FOREIGN_KEY_CHECKS=0;');
 
         DB::connection($connection)
             ->table($table_name)
             ->truncate();
-
-        DB::connection($connection)
-            ->statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 
     /**
