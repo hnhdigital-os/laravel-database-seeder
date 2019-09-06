@@ -8,6 +8,11 @@ Provides the ability to import data (raw sql or CSV) from a file or from files f
 
 This package has been developed by H&H|Digital, an Australian botique developer. Visit us at [hnh.digital](http://hnh.digital).
 
+## Prerequisites
+
+* PHP >= 7.2
+* Laravel >= 5.8
+
 ## Install
 
 Via composer:
