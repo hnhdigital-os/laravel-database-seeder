@@ -116,7 +116,6 @@ class SeedFromCsvCommand extends Command
 
             DB::connection($connection)
                 ->statement('SET FOREIGN_KEY_CHECKS=1;');
-
         } catch (\Exception $exception) {
             $this->line('');
             $this->error('SQL error occurred on importing '.$table_name);
