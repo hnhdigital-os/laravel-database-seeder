@@ -4,8 +4,8 @@ namespace HnhDigital\LaravelDatabaseSeeder;
 
 use DB;
 use File;
-use Illuminate\Console\Command;
 use League\Csv\Reader;
+use Illuminate\Console\Command;
 
 class SeedFromCsvCommand extends Command
 {
@@ -38,7 +38,7 @@ class SeedFromCsvCommand extends Command
         $source_path = $this->argument('path');
 
         // Force default database connection.
-        $this->connection = !empty($this->option('connection'))
+        $this->connection = ! empty($this->option('connection'))
             ? $this->option('connection')
             : config('database.default');
 
@@ -56,11 +56,11 @@ class SeedFromCsvCommand extends Command
 
         $this->info('This process will replace any existing data.');
 
-        if (!$this->option('force')) {
+        if (! $this->option('force')) {
             $force_import = $this->confirm('Are you sure? [y|N]');
         }
 
-        if (!$force_import) {
+        if (! $force_import) {
             return;
         }
 
@@ -136,7 +136,6 @@ class SeedFromCsvCommand extends Command
      */
     private function prepareTable($connection, $table_name)
     {
-
         DB::connection($connection)
             ->table($table_name)
             ->truncate();

@@ -2,9 +2,9 @@
 
 namespace HnhDigital\LaravelDatabaseSeeder;
 
-use Config;
 use DB;
 use File;
+use Config;
 use Illuminate\Console\Command;
 
 class SeedFromSqlCommand extends Command
@@ -37,10 +37,9 @@ class SeedFromSqlCommand extends Command
         $source_path = $this->argument('path');
 
         // Force default database connection.
-        $this->connection = !empty($this->option('connection'))
+        $this->connection = ! empty($this->option('connection'))
             ? $this->option('connection')
             : Config::get('database.default');
-
 
         // Get the files.
         $files = $this->getFiles($source_path);
@@ -56,11 +55,11 @@ class SeedFromSqlCommand extends Command
 
         $this->info('This process will replace any existing data.');
 
-        if (!$this->option('force')) {
+        if (! $this->option('force')) {
             $force_import = $this->confirm('Are you sure? [y|N]');
         }
 
-        if (!$force_import) {
+        if (! $force_import) {
             return;
         }
 
